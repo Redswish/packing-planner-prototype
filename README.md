@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trip Packing Planner
 
-## Getting Started
+A conversational packing assistant. It interviews you about your trip, then
+produces a tailored, quantified packing list.
 
-First, run the development server:
+Built as a local Next.js + TypeScript prototype whose **behaviour comes entirely
+from Agent Skills** (the [agentskills.io](https://agentskills.io) standard). The
+application code is a generic harness — it knows how to find and load skills,
+but nothing about packing, travel, or what to ask. Everything the assistant
+actually does lives in `skills/*/SKILL.md`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+> Editing a `SKILL.md` file is the only way to change the agent's behaviour.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## How it works
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Skills load in two stages:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **At startup** the server scans `skills/` and reads only the YAML frontmatter
+   (`name` + `description`) of each `SKILL.md`. Those pairs go into the system
+   prompt so the model knows what exists.
+2. **On demand** the model calls `load_skill` to pull in one skill's full
+   instructions — and `read_skill_resource` to read any files it bundles.
 
-## Learn More
+Each assistant reply shows a badge for every skill it opened.
 
-To learn more about Next.js, take a look at the following resources:
+## The skills
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Skill | Role |
+| --- | --- |
+| `trip-interview` | Owns the conversation. Dials for question count and tone, the hurry escape hatch, then hands off. |
+| `travel-boundaries` | What not to answer (forecasts, visas, medication, unsolicited buying). |
+| `seasonal-climate` | Seasonal norms → clothing implications. Never a live forecast. |
+| `packing-list-builder` | Grouped, quantified list. Bundles `templates/essentials.md`. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Change **Questions per turn** in `skills/trip-interview/SKILL.md` and send a new
+message. No restart, no code.
 
-## Deploy on Vercel
+## Running it
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Install dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   ```bash
+   npm install
+   ```
+
+2. Copy the env file and add a [Vercel AI Gateway](https://vercel.com/d?to=%2F%5Bteam%5D%2F%7E%2Fai-gateway%2Fapi-keys) key:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Start the dev server:
+
+   ```bash
+   npm run dev
+   ```
+
+   Open http://localhost:3000.
+
+The model is `anthropic/claude-sonnet-5`, set in `src/lib/agent.ts`.
+
+## Scope
+
+No auth, no database, no streaming, no tests. Transcripts live in the browser
+session only.
