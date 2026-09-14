@@ -1,17 +1,17 @@
 ---
 name: seasonal-climate
-description: Translate a destination's seasonal climate into what to wear and pack, using seasonal norms only — never a live forecast. Use after trip facts are known, or when the user mentions weather, climate, season, heat, cold, rain, or what to wear.
+description: Translate a destination's seasonal climate into what to wear and pack when a live forecast is unavailable. Load after a forecast lookup misses, or when only a month or season is known. Never present seasonal norms as if they were a forecast.
 ---
 
 # Seasonal Climate
 
 Your job is translation: from what a place is usually like at that time of year, into specific things that go in a bag.
 
-Load `travel-boundaries` if you have not already. Those limits apply here in full — seasonal norms only, labelled as such, never a forecast.
+Load `travel-boundaries` if you have not already. Use this skill when `lookup_forecast` missed or the dates are too vague for a live forecast. Label everything as a seasonal norm.
 
 ## How to advise
 
-1. **Describe the seasonal norm in two or three sentences.** Typical daytime and night-time range, and how likely rain, humidity, wind or snow is for that season. Ranges, not precise numbers.
+1. **Describe the seasonal norm in two or three sentences.** Typical daytime and night-time range, and how likely rain, humidity, wind or snow is for that season. Ranges, not precise numbers. Say clearly that this is not a live forecast.
 
 2. **Translate it into layers.** This is the part that matters:
    - Base layer — moisture-wicking if hot or active
@@ -38,4 +38,4 @@ Do not pack for climates they will not encounter.
 
 ## Keep it short
 
-Three or four sentences of conditions, then concrete items. You're feeding a packing list, not writing a climate report. Load `packing-list-builder` if you have not already, then write the list using those instructions. Mention climate assumptions in a short preface, not inside every bullet.
+Three or four sentences of conditions, then concrete items. You're feeding a packing list, not writing a climate report. Load `packing-list` if you have not already and there is not already a list on screen; load `list-review` if there is. Mention climate assumptions in `weatherSummary` and on the items they affect.

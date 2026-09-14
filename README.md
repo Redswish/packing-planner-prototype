@@ -1,13 +1,13 @@
 # Trip Packing Planner
 
 A conversational packing assistant. It interviews you about your trip, then
-produces a tailored, quantified packing list.
+produces a tailored, quantified packing list you can tick off and dismiss.
 
 Built as a local Next.js + TypeScript prototype whose **behaviour comes entirely
 from Agent Skills** (the [agentskills.io](https://agentskills.io) standard). The
-application code is a generic harness — it knows how to find and load skills,
-but nothing about packing, travel, or what to ask. Everything the assistant
-actually does lives in `skills/*/SKILL.md`.
+application code is a harness — it knows how to find and load skills, put
+interview widgets on screen, and render a persistent checklist. Everything the
+assistant actually decides lives in `skills/*/SKILL.md`.
 
 > Editing a `SKILL.md` file is the only way to change the agent's behaviour.
 
@@ -27,10 +27,11 @@ Each assistant reply shows a badge for every skill it opened.
 
 | Skill | Role |
 | --- | --- |
-| `trip-interview` | Owns the conversation. Dials for question count and tone, the hurry escape hatch, then hands off. |
-| `travel-boundaries` | What not to answer (forecasts, visas, medication, unsolicited buying). |
-| `seasonal-climate` | Seasonal norms → clothing implications. Never a live forecast. |
-| `packing-list-builder` | Grouped, quantified list. Bundles `templates/essentials.md`. |
+| `trip-interview` | Owns the conversation. Dials for question count and tone, widgets for luggage / nights / laundry / activities, then hands off. |
+| `packing-list` | First grouped, quantified list via `present_packing_list`. Bundles `templates/essentials.md`. |
+| `list-review` | Re-quantifies an existing list after ticks, dismissals, or "what's left?". |
+| `travel-boundaries` | What not to answer (visas, medication, unsolicited buying). Live forecast if the tool hits; seasonal norms if it misses. |
+| `seasonal-climate` | Seasonal norms → clothing implications when a live forecast is unavailable. |
 
 Change **Questions per turn** in `skills/trip-interview/SKILL.md` and send a new
 message. No restart, no code.
@@ -61,5 +62,5 @@ The model is `anthropic/claude-sonnet-5`, set in `src/lib/agent.ts`.
 
 ## Scope
 
-No auth, no database, no streaming, no tests. Transcripts live in the browser
-session only.
+No auth, no database, no streaming, no tests. Transcripts and the checklist live
+in the browser session only.

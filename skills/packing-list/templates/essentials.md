@@ -49,4 +49,4 @@ Quantities are deliberately absent here — they come from the trip.
 
 ## What to wear on the day
 - [ ] Travel outfit — comfortable, layered
-- [ ] The bulkiest coat and shoes, worn rather than packed
+- [ ] The bulkiest coat and shoes, worn rather than packing

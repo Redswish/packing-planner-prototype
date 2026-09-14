@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@shadcn/react": "^0.3.1",
     "ai": "^7.0.97",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.2.6",
